@@ -14,7 +14,7 @@ app.use(cors());
 const persons = [
     {
         id: "1",
-        name: "Arto Hellas",
+        name: "Imola Hellas",
         number: "040-123456"
     },
     {
@@ -86,7 +86,7 @@ app.post('/api/persons', (req, res)=>{
     res.status(201).json(newPerson);
 })
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+    console.log(`Server running on port ${PORT}`)
+})
