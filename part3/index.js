@@ -1,4 +1,3 @@
-import axios from 'axios'
 const express = require('express')
 const morgan = require("morgan")
 const cors = require('cors')
@@ -83,9 +82,8 @@ app.post('/api/persons', (request, response) => {
     }
 
     const note = {
-        content: body.content,
-        important: body.important || false,
-        date: new Date(),
+        name: body.name,
+        number: body.number,
         id: generateId(),
     }
 
