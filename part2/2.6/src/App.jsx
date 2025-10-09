@@ -16,9 +16,17 @@ const App = () => {
     const [notificationType, setNotificationType] = useState('success')
 
     useEffect(() => {
-        personService.getAll().then(initialPersons => {
-            setPersons(initialPersons)
-        })
+        personService.getAll()
+            .then(initialPersons => {
+                const personsArray = Array.isArray(initialPersons)
+                    ? initialPersons
+                    : initialPersons.persons || []
+                setPersons(personsArray)
+            })
+            .catch(error => {
+                console.error('Error fetching persons:', error)
+                setPersons([])
+            })
     }, [])
 
     const handleChangeName = (event) => setNewName(event.target.value)
@@ -44,6 +52,12 @@ const App = () => {
                         setNotificationType('success')
                         setTimeout(() => setNotificationMessage(null), 5000)
                     })
+                    .catch(error => {
+                        console.error('Update failed:', error)
+                        setNotificationMessage(`Failed to update ${existing.name}`)
+                        setNotificationType('error')
+                        setTimeout(() => setNotificationMessage(null), 5000)
+                    })
             }
         } else {
             const newPerson = { name: newName, number: newNumber }
@@ -58,6 +72,7 @@ const App = () => {
                     setTimeout(() => setNotificationMessage(null), 5000)
                 })
                 .catch(error => {
+                    console.error('Create failed:', error)
                     setNotificationMessage(`${newName} could not be added.`)
                     setNotificationType('error')
                     setTimeout(() => setNotificationMessage(null), 5000)
@@ -67,15 +82,24 @@ const App = () => {
 
     const handleDelete = (id, name) => {
         if (window.confirm(`Delete ${name}?`)) {
-            personService.remove(id).then(() => {
-                setPersons(persons.filter(p => p.id !== id))
-            })
+            personService.remove(id)
+                .then(() => {
+                    setPersons(persons.filter(p => p.id !== id))
+                })
+                .catch(error => {
+                    console.error('Delete failed:', error)
+                    setNotificationMessage(`Failed to delete ${name}`)
+                    setNotificationType('error')
+                    setTimeout(() => setNotificationMessage(null), 5000)
+                })
         }
     }
 
-    const personsToShow = persons.filter(person =>
-        person.name.toLowerCase().includes(newFilter.toLowerCase())
-    )
+    const personsToShow = Array.isArray(persons)
+        ? persons.filter(person =>
+            person.name.toLowerCase().includes(newFilter.toLowerCase())
+        )
+        : []
 
     return (
         <div>
