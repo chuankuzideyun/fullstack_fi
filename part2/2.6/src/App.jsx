@@ -72,10 +72,7 @@ const App = () => {
                     setTimeout(() => setNotificationMessage(null), 5000)
                 })
                 .catch(error => {
-                    console.error('Create failed:', error)
-                    setNotificationMessage(`${newName} could not be added.`)
-                    setNotificationType('error')
-                    setTimeout(() => setNotificationMessage(null), 5000)
+                    console.log(error.respond.data.error)
                 })
         }
     }
